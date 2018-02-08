@@ -1,0 +1,52 @@
+body{
+	margin: 0;
+	font-family: "Arial Black";
+}
+/*Navbar Styling*/
+nav > ul{
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+	height: 60px;
+}
+#navLabel{
+	float: left;
+	color:white;
+	line-height: 60px;
+	text-decoration: none;
+	padding-left: 10%;
+	font-size: 25px;
+}
+#navBtn{
+	float: right;
+	line-height:60px;
+	padding-right:10%;
+}
+button{
+	background: white;
+  	border: 2px solid;
+  	font: inherit;
+  	border-radius: 5px;
+  	line-height: 35px;
+  	width: 90px;
+}
+/*Main Container Styling*/
+main{
+	display: flex;
+	justify-content: center;
+	margin: 5% 10%;
+	padding: 0;
+}
+section{
+	order: 0;
+	width: 70%;
+	margin-left: 5%;
+}
+aside{
+	width:30%;
+	background-color:blue;
+	padding-left: 2%;
+	border-right: 2px dotted;
+}

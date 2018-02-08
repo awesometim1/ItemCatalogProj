@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Item Catalog
+	</title>
+	<link rel="stylesheet" type="text/css" href="../static/style.css">
+</head>
+<body>
+
+	<nav>
+		<ul>
+			<li id = "navLabel"><strong>Item Catalog</strong></li>
+			<li id = "navBtn"><button type = "button"><strong>Login</strong></button></li>
+		</ul>
+	</nav>
+
+	<main>
+
+		<aside>
+			<h3>
+				Categories
+			</h3>
+			<ul>
+				{% for cat in categories%}
+				<li><strong> {{cat}}</strong></li>
+				{% endfor %}
+			</ul>
+
+		</aside>
+
+		<section>
+
+			<h3>
+				Latest Items
+			</h3>
+			<ul>
+				{% for item in items%}
+				<li><strong> {{item}}</strong> <em>({{item.category}})</em></li>
+				{% endfor %}
+			</ul>
+
+		</section>
+
+
+
+
+	</main>
+
+
+
+
+
+</body>
+</html>
