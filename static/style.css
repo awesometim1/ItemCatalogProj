@@ -40,9 +40,10 @@ main{
 	justify-content: center;
 	margin: 5% 10%;
 	padding: 0;
-	background-color: white;
 	border-style: groove;
-	background-color:#BDCBE0;
+	background-image:url('brick.jpg');
+	background-repeat: no-repeat;
+    background-size: cover;
 }
 section{
 	order: 0;
@@ -53,7 +54,7 @@ section{
 aside{
 	width:30%;
 	padding-bottom: 32px;
-	border-right: 2px groove;
+	border-right: 5px groove;
 	margin: auto;
 	padding-right: 5%;
 	padding-left: 5%;
@@ -72,7 +73,7 @@ h3{
 }
 /*Category Styling*/
 aside > ul > li > a:link, aside > ul > li > a:visited {
-    background-color: #BDCBE0;
+    background-color: transparent;
 	color: #333;
     padding: 14px 25px;
     text-align: center;
@@ -85,11 +86,11 @@ aside > ul > li > a:link, aside > ul > li > a:visited {
 }
 aside > ul > li > a:hover, aside > ul > li > a:active {
     background-color: #333;
-    color: #BDCBE0;
+    color: white;
 }
 /*Latest Items Styling*/
 section > ul > li {
-    background-color: #BDCBE0;
+    background-color: transparent;
 	color: #333;
     padding: 14px 25px;
     text-align: center;
@@ -111,8 +112,8 @@ section > ul > li > a{
 	display: inline-block;
 	width: 100%;
 	color: #333;
-	border-top: 14px solid #BDCBE0;
-	border-bottom: 14px solid #BDCBE0;
+	border-top: 14px solid transparent;
+	border-bottom: 14px solid transparent;
 }
 section > ul > li > a:hover {
     color: white;
