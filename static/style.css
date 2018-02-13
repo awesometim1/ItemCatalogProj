@@ -3,6 +3,9 @@ body{
 	font-family: "Arial Black";
 }
 /*Navbar Styling*/
+nav{
+	text-align: center;
+}
 nav > ul{
 	list-style-type: none;
 	margin: 0;
@@ -10,27 +13,26 @@ nav > ul{
 	overflow: hidden;
 	background-color: #333;
 	height: 60px;
+	display: inline-block;
+	width: 100%;
 }
 #navLabel{
 	float: left;
 	color:white;
 	line-height: 60px;
 	text-decoration: none;
-	padding-left: 10%;
+	margin-left: 10%;
 	font-size: 25px;
 }
-#navBtn{
-	float: right;
-	line-height:60px;
-	padding-right:10%;
+/*Google oAUth Button Styling*/
+.g-signin2{
+	width:100%;
 }
-button{
-	background: white;
-  	border: 2px solid;
-  	font: inherit;
-  	border-radius: 5px;
-  	line-height: 35px;
-  	width: 90px;
+.g-signin2 > div {
+	margin: 0 auto;
+	margin-top: 12px;
+	margin-right: 10%;
+	float:right;
 }
 /*Main Container Styling*/
 main{
@@ -38,15 +40,82 @@ main{
 	justify-content: center;
 	margin: 5% 10%;
 	padding: 0;
+	background-color: white;
+	border-style: groove;
+	background-color:#BDCBE0;
 }
 section{
 	order: 0;
 	width: 70%;
 	margin-left: 5%;
+	margin-right: 5%;
 }
 aside{
 	width:30%;
-	background-color:blue;
-	padding-left: 2%;
-	border-right: 2px dotted;
+	padding-bottom: 32px;
+	border-right: 2px groove;
+	margin: auto;
+	padding-right: 5%;
+	padding-left: 5%;
+}
+li{
+	list-style-type: none;
+	text-align: center;
+	font-size: 1.5vw;
+}
+ul{
+	padding: 0;
+}
+h3{
+	font-size: 3vw;
+	text-align: center;
+}
+/*Category Styling*/
+aside > ul > li > a:link, aside > ul > li > a:visited {
+    background-color: #BDCBE0;
+	color: #333;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 100%;
+    box-sizing: border-box;
+}
+aside > ul > li > a:hover, aside > ul > li > a:active {
+    background-color: #333;
+    color: #BDCBE0;
+}
+/*Latest Items Styling*/
+section > ul > li {
+    background-color: #BDCBE0;
+	color: #333;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+}
+section > ul > li:hover {
+    background-color: #333;
+}
+/*Extra styling for the anchor tags to make them appear larger*/
+section > ul > li > a{
+	padding: 0;
+	text-decoration: none;
+	display: inline-block;
+	width: 100%;
+	color: #333;
+	border-top: 14px solid #BDCBE0;
+	border-bottom: 14px solid #BDCBE0;
+}
+section > ul > li > a:hover {
+    color: white;
+    border-top: 14px solid #333;
+	border-bottom: 14px solid #333;
 }
