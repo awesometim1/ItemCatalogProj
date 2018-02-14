@@ -34,6 +34,21 @@ nav > ul{
 	margin-right: 10%;
 	float:right;
 }
+/*Sign Out Button*/
+#signOut {
+    background-color: transparent;
+	color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 60px;
+    width:10%;
+    float:right;
+}
+#signOut:hover, #signOut:active {
+    background-color: white;
+    color: #333;
+}
 /*Main Container Styling*/
 main{
 	display: flex;
