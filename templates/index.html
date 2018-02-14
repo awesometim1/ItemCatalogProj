@@ -17,28 +17,17 @@
 				client_id: '235419982833-mrd80v7jhd6i49j4ja27g7j3e7eh5803.apps.googleusercontent.com', scope:'profile'
 			});
 		});
-	</script>
-	<script>
-		gapi.load('auth2', function() {
-			auth2 = gapi.auth2.init({
-				client_id: '235419982833-mrd80v7jhd6i49j4ja27g7j3e7eh5803.apps.googleusercontent.com', scope:'profile'
-			});
-			auth2.then(function() {
-				if (auth2.isSignedIn.get()){
-					$("#signOut").css("display", "block")
-				}
-			})
-		});
+		
 	</script>
 	<script>
 		function onSignIn(googleUser) {
-		var profile = googleUser.getBasicProfile();
-  		console.log('ID: ' + profile.getId());
-  		console.log('Name: ' + profile.getName());
-  	}
-  </script>
+			var profile = googleUser.getBasicProfile();
+			console.log('ID: ' + profile.getId());
+			console.log('Name: ' + profile.getName());
+		}
+	</script>
 
-  <link rel="stylesheet" type="text/css" href="../static/style.css?1">
+	<link rel="stylesheet" type="text/css" href="../static/style.css?1">
 
 </head>
 <body>
@@ -57,10 +46,9 @@
 				});
 			</script>
 
-			<a href="#" id = "signOut" style = "display: none"onclick="signOut();">Sign out</a>
+			<a href="#" id = "signOut" style = "display: block"onclick="signOut();">Sign out</a>
 			<script>
 				function signOut() {
-					$("#signOut").css("display", "none")
 					var auth2 = gapi.auth2.getAuthInstance();
 					auth2.signOut().then(function () {
 						console.log('User signed out.');
