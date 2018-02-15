@@ -44,10 +44,19 @@ nav > ul{
     line-height: 60px;
     width:10%;
     float:right;
+    border: none;
+    font-family: inherit;
+    font-size:inherit;
+    margin-right:1%;
 }
 #signOut:hover, #signOut:active {
     background-color: white;
     color: #333;
+    cursor:pointer;
+}
+/*Remove Blue Outline*/
+#signOut:focus {
+	outline: 0;
 }
 /*Main Container Styling*/
 main{
