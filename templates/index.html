@@ -46,11 +46,15 @@
 				});
 			</script>
 
-			<a href="" id = "signOut" style = "display: block" onclick= "signOut()">Sign out</a>
+			<a href="" id = "signOut" style = "display: block" onclick= "signOut()" type = "button">Sign out</a>
 			<script>
 				function signOut() {
-					var auth2 = gapi.auth2.getAuthInstance();
-					auth2.signOut().then(signOutCallback);
+					if (auth2.isSignedIn.get()){
+						auth2.signOut().then(signOutCallback);
+					}
+					else {
+						console.log("No user signed in!")
+					}
 				}
 			</script>
 		</ul>
