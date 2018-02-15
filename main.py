@@ -34,6 +34,16 @@ app = Flask(__name__, static_url_path='/static')
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 
+
+# Show Main Page
+@app.route('/')
+@app.route('/index')
+def showIndex():
+    categories = db.query(Category).all()
+    items = db.query(Item).all()
+    return render_template('index.html', categories=categories, items = items)
+
+
 @auth.verify_password
 def verify_password(username_or_token, password):
     #Try to see if it's a token first
@@ -111,7 +121,6 @@ def login(provider):
 
         user_name = data['name']
         user_id = data['id']
-        print("user_id", file=sys.stderr)
         # See if user exists, if it doesn't make a new one
         exists = db.query(User.id).filter_by(id = 2).scalar() is not None
         if exists:
@@ -130,43 +139,9 @@ def login(provider):
 
         # STEP 6 - Send back token to the client 
 
-
         return jsonify({'token': token.decode('ascii'), 'duration': 600})
     else:
         return 'Unrecoginized Provider'
-
-@app.route('/token')
-@auth.login_required
-def get_auth_token():
-    token = g.user.generate_auth_token()
-    return jsonify({'token': token.decode('ascii')})
-
-
-@app.route('/users', methods = ['POST'])
-def new_user():
-    username = request.json.get('username')
-    password = request.json.get('password')
-    if username is None or password is None:
-        print("missing arguments", file = sys.stderr)
-        abort(400) 
-        
-    if db.query(User).filter_by(username = username).first() is not None:
-        print("existing user", file = sys.stderr)
-        user = db.query(User).filter_by(username=username).first()
-        return jsonify({'message':'user already exists'}), 200#, {'Location': url_for('get_user', id = user.id, _external = True)}
-        
-    user = User(username = username)
-    user.hash_password(password)
-    db.add(user)
-    db.commit()
-    return jsonify({ 'username': user.username }), 201#, {'Location': url_for('get_user', id = user.id, _external = True)}
-
-@app.route('/api/users/<int:id>')
-def get_user(id):
-    user = db.query(User).filter_by(id=id).one()
-    if not user:
-        abort(400)
-    return jsonify({'username': user.username})
 
 @app.route('/api/resource')
 @auth.login_required
@@ -192,15 +167,6 @@ def get_resource():
 # def restaurantsJSON():
 #     restaurants = db.query(Restaurant).all()
 #     return jsonify(restaurants=[r.serialize for r in restaurants])
-
-
-# Show Main Page
-@app.route('/')
-@app.route('/index')
-def showIndex():
-    categories = db.query(Category).all()
-    items = db.query(Item).all()
-    return render_template('index.html', categories=categories, items = items)
 
 # Create a new restaurant
 
@@ -313,4 +279,4 @@ def showIndex():
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', threaded=True, port=1234)
+    app.run(host='0.0.0.0', port=1234)
