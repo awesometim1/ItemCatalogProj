@@ -2,7 +2,6 @@ from models import User, Category, Item, Base
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
-import datetime as dt
 
 # Connect to Database and create database session
 engine = create_engine('sqlite:///itemCatalog.db')
@@ -62,3 +61,9 @@ session.add_all(items)
 
 session.commit()
 
+#Add Default User
+
+session.add(User(g_id = 1, name = "Tim Lim"))
+session.commit()
+
+session.close()

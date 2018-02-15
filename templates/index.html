@@ -14,7 +14,7 @@
 	<script>
 		gapi.load('auth2', function() {
 			auth2 = gapi.auth2.init({
-				client_id: '235419982833-mrd80v7jhd6i49j4ja27g7j3e7eh5803.apps.googleusercontent.com', scope:'profile'
+				client_id: '235419982833-mrd80v7jhd6i49j4ja27g7j3e7eh5803.apps.googleusercontent.com'
 			});
 		});
 		
@@ -36,23 +36,21 @@
 		<ul>
 			<li id = "navLabel"><strong>Item Catalog</strong></li>
 			<!-- GOOGLE SIGN IN BUTTON -->
-			<div  class="g-signin2" id = "signInButton" data-onsuccess="onSignIn"><strong></strong></div>
+			<div  class="g-signin2" id = "signInButton"><strong></strong></div>
 			
 			<script>
-				$('#signinButton').click(function() {
-
+				$('#signInButton').click(function() {
+					console.log("signing!")
 					auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
 
 				});
 			</script>
 
-			<a href="#" id = "signOut" style = "display: block"onclick="signOut();">Sign out</a>
+			<a href="" id = "signOut" style = "display: block" onclick= "signOut()">Sign out</a>
 			<script>
 				function signOut() {
 					var auth2 = gapi.auth2.getAuthInstance();
-					auth2.signOut().then(function () {
-						console.log('User signed out.');
-					});
+					auth2.signOut().then(signOutCallback);
 				}
 			</script>
 		</ul>
@@ -66,7 +64,7 @@
 			</h3>
 			<ul>
 				{% for cat in categories %}
-				<li><a href = "#">{{cat.name}}</a></li>
+				<li><a href = "/">{{cat.name}}</a></li>
 				{% endfor %}
 			</ul>
 
@@ -79,7 +77,7 @@
 			</h3>
 			<ul>
 				{% for item in items%}
-				<li><a href = "#">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
+				<li><a href = "/">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
 				{% endfor %}
 			</ul>
 
@@ -92,34 +90,40 @@
 		function signInCallback(json) {
 			console.log('inside callback fuction');
 			console.log(json);
-			authResult = JSON.parse(json);
 			authResult = json;
 			if (authResult['code']) {
-    // Hide the sign-in button now that the user is authorized, for example:
-    $('#signinButton').attr('style', 'display: none');
-    // Send the code to the server
-    $.ajax({
-    	type: 'POST',
-    	url: '/oauth/google',
-    	headers : {
-    		'X-Requested-With' : 'XMLHttpRequest'
-    	},
-    	processData: false,
-    	data: authResult['code'],
-    	contentType: 'application/octet-stream; charset=utf-8',
-    	success: function(result) {
-        // Handle or verify the server response if necessary.
-        if (result) {
-        	$('#result').html('Login Successful!</br>'+ result + '')
-        } else if (authResult['error']) {
-        	console.log('There was an error: ' + authResult['error']);
-        } else {
-        	$('#result').html('Failed to make a server-side call. Check your configuration and console.');
+    			// Send the code to the server
+    			$.ajax({
+    				type: 'POST',
+    				url: 'http://localhost:1234/oauth/google',
+    				processData: false,
+    				data: authResult['code'],
+    				contentType: 'application/octet-stream; charset=utf-8',
+    				success: function(result) {
+        	// Handle or verify the server response if necessary.
+        	if (result) {
+        		console.log('Login Successful!'+ result)
+        	} else if (authResult['error']) {
+        		console.log('There was an error: ' + authResult['error']);
+        	} else {
+        		console.log('Failed to make a server-side call. Check your configuration and console.');
+        	}
         }
-    }
-}); 
-}
-}
-</script>
+    });
+    		}
+    	}
+    </script>
+    <script>
+    	function signOutCallback() {
+    		console.log('Signing out...');
+    		$.ajax({
+    			type: 'GET',
+    			url: 'http://localhost:1234/signout',
+    			success: function(result) {
+    				console.log("SIGNED OUT!")
+    			}
+    		});
+    	}
+    </script>
 </body>
 </html>

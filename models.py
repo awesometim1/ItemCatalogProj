@@ -17,13 +17,8 @@ secret_key = ''.join(key_helper for x in xrange(32))
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    password_hash = Column(String(64))
-
-    def hash_password(self, password):
-        self.password_hash = pwd_context.encrypt(password)
-
-    def verify_password(self, password):
-        return pwd_context.verify(password, self.password_hash)
+    g_id = Column(String(64))
+    name = Column(String(64))
 
     def generate_auth_token(self, expiration=600):
         s = Serializer(secret_key, expires_in=expiration)
@@ -79,6 +74,6 @@ class Item(Base):
         }
 
 
-engine = create_engine('sqlite:///itemCatalog.db')
+engine = create_engine('sqlite:///itemCatalog1.db')
 
 Base.metadata.create_all(engine)
