@@ -27,7 +27,7 @@
 		}
 	</script>
 
-	<link rel="stylesheet" type="text/css" href="../static/style.css?1">
+	<link rel="stylesheet" type="text/css" href="../static/style.css">
 
 </head>
 <body>
@@ -81,7 +81,7 @@
 			</h3>
 			<ul>
 				{% for item in items%}
-				<li><a href = "/">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
+				<li><a href = "{{item.name}}/desc">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
 				{% endfor %}
 			</ul>
 
