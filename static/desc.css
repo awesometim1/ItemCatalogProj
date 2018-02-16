@@ -1,0 +1,85 @@
+body{
+	margin: 0;
+	font-family: "Arial Black";
+}
+/*Navbar Styling*/
+nav{
+	text-align: center;
+}
+nav > ul{
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+	height: 60px;
+	display: inline-block;
+	width: 100%;
+}
+#navLabel{
+	float: left;
+	color:white;
+	line-height: 60px;
+	text-decoration: none;
+	margin-left: 10%;
+	font-size: 25px;
+}
+/*Google oAUth Button Styling*/
+.g-signin2{
+	width:100%;
+}
+.g-signin2 > div {
+	margin: 0 auto;
+	margin-top: 12px;
+	margin-right: 10%;
+	float:right;
+}
+/*Sign Out Button*/
+#signOut {
+    background-color: transparent;
+	color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 60px;
+    width:10%;
+    float:right;
+    border: none;
+    font-family: inherit;
+    font-size:inherit;
+    margin-right:1%;
+}
+#signOut:hover, #signOut:active {
+    background-color: white;
+    color: #333;
+    cursor:pointer;
+}
+/*Remove Blue Outline*/
+#signOut:focus {
+	outline: 0;
+}
+/*Main Container Styling*/
+main{
+	margin: 5% 10%;
+	padding: 2% 2%;
+	border-style: groove;
+}
+h1{
+	margin-top: 0;
+}
+a:link, a:visited {
+    background-color: transparent;
+	color: #333;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 100%;
+    box-sizing: border-box;
+}
+a:hover, a:active {
+    background-color: #333;
+    color: white;
+}
