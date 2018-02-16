@@ -43,6 +43,21 @@ def showIndex():
     items = db.query(Item).all()
     return render_template('index.html', categories=categories, items = items)
 
+# Show Item Descriptions
+
+@app.route('/<iName>/desc')
+def showItemDesc(iName):
+    item = db.query(Item).filter_by(name=iName).one()
+    return render_template('desc.html', item=item)
+
+# Show All Items In Category
+
+@app.route('/<cName>')
+def showItems(cName):
+    cat = db.query(Category).filter_by(name= cName).one()
+    categories = db.query(Category).all()
+    items = db.query(Item).filter_by(cat_id=cat.id).all()
+    return render_template('index.html', categories = categories, items=items)
 
 @auth.verify_password
 def verify_password(username_or_token, password):
@@ -148,6 +163,23 @@ def login(provider):
 def get_resource():
     return jsonify({ 'data': 'Hello, %s!' % g.user.username })
 
+
+
+# Create a new menu item
+# @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
+# def newMenuItem(restaurant_id):
+#     restaurant = db.query(Restaurant).filter_by(id=restaurant_id).one()
+#     if request.method == 'POST':
+#         newItem = MenuItem(name=request.form['name'], description=request.form[
+#                            'description'], price=request.form['price'], course=request.form['course'], restaurant_id=restaurant_id)
+#         db.add(newItem)
+#         db.commit()
+#         flash('New Menu %s Item Successfully Created' % (newItem.name))
+#         return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+#     else:
+#         return render_template('newmenuitem.html', restaurant_id=restaurant_id)
+
+
 # # JSON APIs to view Restaurant Information
 # @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
 # def restaurantMenuJSON(restaurant_id):
@@ -211,31 +243,7 @@ def get_resource():
 #     else:
 #         return render_template('deleteRestaurant.html', restaurant=restaurantToDelete)
 
-# # Show a restaurant menu
 
-
-# @app.route('/restaurant/<int:restaurant_id>/')
-# @app.route('/restaurant/<int:restaurant_id>/menu/')
-# def showMenu(restaurant_id):
-#     restaurant = db.query(Restaurant).filter_by(id=restaurant_id).one()
-#     items = db.query(MenuItem).filter_by(
-#         restaurant_id=restaurant_id).all()
-#     return render_template('menu.html', items=items, restaurant=restaurant)
-
-
-# # Create a new menu item
-# @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
-# def newMenuItem(restaurant_id):
-#     restaurant = db.query(Restaurant).filter_by(id=restaurant_id).one()
-#     if request.method == 'POST':
-#         newItem = MenuItem(name=request.form['name'], description=request.form[
-#                            'description'], price=request.form['price'], course=request.form['course'], restaurant_id=restaurant_id)
-#         db.add(newItem)
-#         db.commit()
-#         flash('New Menu %s Item Successfully Created' % (newItem.name))
-#         return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-#     else:
-#         return render_template('newmenuitem.html', restaurant_id=restaurant_id)
 
 # # Edit a menu item
 
