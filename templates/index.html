@@ -68,23 +68,33 @@
 			</h3>
 			<ul>
 				{% for cat in categories %}
-				<li><a href = "/{{cat.name}}">{{cat.name}}</a></li>
+				<li><a href = "/app/{{cat.name}}">{{cat.name}}</a></li>
 				{% endfor %}
 			</ul>
 
 		</aside>
 
 		<section>
-
+			
 			<h3>
+				{% if home %}
 				Latest Items
+				{% else %}
+				{{cat.name}} Items ({{iNum}} Items)
+				{% endif %}
 			</h3>
+			
+			<h3>
+				
+			</h3>
+			
 			<ul>
 				{% for item in items%}
-				<li><a href = "{{item.name}}/desc">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
+				<li><a href = "/app/{{item.category.name}}/{{item.name}}">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
 				{% endfor %}
 			</ul>
 
+			<a href="/" style = "display:{% if home %} none {% else %} block {% endif %}">Back to home</a>
 		</section>
 
 	</main>

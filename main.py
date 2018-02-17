@@ -37,46 +37,34 @@ CLIENT_ID = json.loads(
 
 # Show Main Page
 @app.route('/')
-@app.route('/index')
+@app.route('/app')
 def showIndex():
     categories = db.query(Category).all()
     items = db.query(Item).all()
-    return render_template('index.html', categories=categories, items = items)
+    return render_template('index.html', categories=categories, items=items, home=True)
 
 # Show Item Descriptions
 
-@app.route('/<iName>/desc')
-def showItemDesc(iName):
+@app.route('/app/<cName>/<iName>')
+def showItemDesc(cName, iName):
     item = db.query(Item).filter_by(name=iName).one()
     return render_template('desc.html', item=item)
 
 # Show All Items In Category
 
-@app.route('/<cName>')
+@app.route('/app/<cName>')
 def showItems(cName):
-    cat = db.query(Category).filter_by(name= cName).one()
+    cat = db.query(Category).filter_by(name=cName).one()
     categories = db.query(Category).all()
     items = db.query(Item).filter_by(cat_id=cat.id).all()
-    return render_template('index.html', categories = categories, items=items)
-
-@auth.verify_password
-def verify_password(username_or_token, password):
-    #Try to see if it's a token first
-    user_id = User.verify_auth_token(username_or_token)
-    if user_id:
-        user = db.query(User).filter_by(id = user_id).one()
-    else:
-        user = db.query(User).filter_by(username = username_or_token).first()
-        if not user or not user.verify_password(password):
-            return False
-    g.user = user
-    return True
+    iNum = len(items)
+    return render_template('index.html', categories=categories, items=items, home=False, cat=cat, iNum=iNum)
 
 @app.route('/signout', methods = ['GET'])
 def logout():
     session['g_id'] = None
     print("Signed out!", file = sys.stderr)
-    return redirect("http://localhost:1234/index", code=301)
+    return redirect("http://localhost:1234/", code=301)
 
 @app.route('/oauth/<provider>', methods = ['POST'])
 def login(provider):

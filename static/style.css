@@ -144,3 +144,20 @@ section > ul > li > a:hover {
     border-top: 14px solid #333;
 	border-bottom: 14px solid #333;
 }
+/*Back to home button*/
+section > a:link, section > a:visited {
+    background-color: transparent;
+	color: #333;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 100%;
+    box-sizing: border-box;
+}
+section > a:hover, section > a:active {
+    background-color: #333;
+    color: white;
+}
