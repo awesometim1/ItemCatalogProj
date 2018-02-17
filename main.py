@@ -40,7 +40,7 @@ CLIENT_ID = json.loads(
 @app.route('/app')
 def showIndex():
     categories = db.query(Category).all()
-    items = db.query(Item).all()
+    items = db.query(Item).order_by(Item.time.desc()).all()
     return render_template('index.html', categories=categories, items=items, home=True)
 
 # Show Item Descriptions
