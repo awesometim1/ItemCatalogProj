@@ -20,24 +20,6 @@ class User(Base):
     g_id = Column(String(64))
     name = Column(String(64))
 
-    def generate_auth_token(self, expiration=600):
-        s = Serializer(secret_key, expires_in=expiration)
-        return s.dumps({'id': self.id})
-
-    @staticmethod
-    def verify_auth_token(token):
-        s = Serializer(secret_key)
-        try:
-            data = s.loads(token)
-        except SignatureExpired:
-            # Valid Token, but expired
-            return None
-        except BadSignature:
-            # Invalid Token
-            return None
-        user_id = data['id']
-        return user_id
-
 
 # Category Model
 class Category(Base):
