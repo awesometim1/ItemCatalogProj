@@ -1,132 +1,17 @@
 {% extends "index.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-	<title>
-		Item Catalog
-	</title>
-	<!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
-	</script>
 
-	<script src="https://apis.google.com/js/platform.js" ></script>
+{% block section %}
+<h3>
+	{{cat.name}} Items ({{iNum}} Items)
 
-	<meta name="google-signin-client_id" content="235419982833-mrd80v7jhd6i49j4ja27g7j3e7eh5803.apps.googleusercontent.com">
-	<script>
-		gapi.load('auth2', function() {
-			auth2 = gapi.auth2.init({
-				client_id: '235419982833-mrd80v7jhd6i49j4ja27g7j3e7eh5803.apps.googleusercontent.com'
-			});
-		});
-		
-	</script>
-	<script>
-		function onSignIn(googleUser) {
-			var profile = googleUser.getBasicProfile();
-			console.log('ID: ' + profile.getId());
-			console.log('Name: ' + profile.getName());
-		}
-	</script>
+</h3>
 
-	<link rel="stylesheet" type="text/css" href="../static/style.css">
+<ul>
+	{% for item in items%}
+	<li><a href = "/app/{{item.category.name}}/{{item.name}}">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
+	{% endfor %}
+</ul>
 
-</head>
-<body>
+<a href="/app">Back to home</a>
 
-	<nav>
-		<ul>
-			<li id = "navLabel"><strong>Item Catalog</strong></li>
-			<!-- GOOGLE SIGN IN BUTTON -->
-			<div  class="g-signin2" id = "signInButton"><strong></strong></div>
-			
-			<script>
-				$('#signInButton').click(function() {
-					console.log("signing!")
-					auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
-				});
-			</script>
-
-			<button id = "signOut" style = "display: block" onclick= "signOut()" type = "button">Sign out</button>
-			<script>
-				function signOut() {
-					if (auth2.isSignedIn.get()){
-						auth2.signOut().then(signOutCallback);
-					}
-					else {
-						console.log("No user signed in!")
-					}
-				}
-			</script>
-		</ul>
-	</nav>
-
-	<main>
-			<aside>
-			<h3>
-				Categories
-			</h3>
-			<ul>
-				{% for cat in categories %}
-				<li><a href = "/app/{{cat.name}}">{{cat.name}}</a></li>
-				{% endfor %}
-			</ul>
-
-		</aside>
-			{% block section %}
-			<h3>
-				{{cat.name}} Items ({{iNum}} Items)
-
-			</h3>
-			
-			<ul>
-				{% for item in items%}
-				<li><a href = "/app/{{item.category.name}}/{{item.name}}">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
-				{% endfor %}
-			</ul>
-
-			<a href="/app">Back to home</a>
-			{% endblock %}
-	</main>
-
-	<!--NEW GOOGLE SIGN IN CODE -->
-	<script>
-		function signInCallback(json) {
-			console.log('inside callback fuction');
-			console.log(json);
-			authResult = json;
-			if (authResult['code']) {
-    			// Send the code to the server
-    			$.ajax({
-    				type: 'POST',
-    				url: 'http://localhost:1234/oauth/google',
-    				processData: false,
-    				data: authResult['code'],
-    				contentType: 'application/octet-stream; charset=utf-8',
-    				success: function(result) {
-        	// Handle or verify the server response if necessary.
-        	if (result) {
-        		console.log('Login Successful!'+ result)
-        	} else if (authResult['error']) {
-        		console.log('There was an error: ' + authResult['error']);
-        	} else {
-        		console.log('Failed to make a server-side call. Check your configuration and console.');
-        	}
-        }
-    });
-    		}
-    	}
-    </script>
-    <script>
-    	function signOutCallback() {
-    		console.log('Signing out...');
-    		$.ajax({
-    			type: 'GET',
-    			url: 'http://localhost:1234/signout',
-    			success: function(result) {
-    				console.log("SIGNED OUT!")
-    			}
-    		});
-    	}
-    </script>
-</body>
-</html>
+{% endblock %}
