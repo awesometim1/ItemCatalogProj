@@ -86,7 +86,7 @@ aside{
 li{
 	list-style-type: none;
 	text-align: center;
-	font-size: 1.5vw;
+	font-size: 1.7vw;
 }
 ul{
 	padding: 0;
@@ -95,11 +95,10 @@ h3{
 	font-size: 3vw;
 	text-align: center;
 }
-/*Category Styling*/
-aside > ul > li > a:link, aside > ul > li > a:visited {
+/*Link Styling*/
+a:link, a:visited {
     background-color: transparent;
 	color: #333;
-    padding: 14px 25px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -107,57 +106,10 @@ aside > ul > li > a:link, aside > ul > li > a:visited {
     margin-bottom: 1%;
     width: 100%;
     box-sizing: border-box;
-}
-aside > ul > li > a:hover, aside > ul > li > a:active {
-    background-color: #333;
-    color: white;
-}
-/*Latest Items Styling*/
-section > ul > li {
-    background-color: transparent;
-	color: #333;
-    padding: 14px 25px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 1%;
-    margin-bottom: 1%;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0;
-}
-section > ul > li:hover {
-    background-color: #333;
-}
-/*Extra styling for the anchor tags to make them appear larger*/
-section > ul > li > a{
-	padding: 0;
-	text-decoration: none;
-	display: inline-block;
-	width: 100%;
-	color: #333;
-	border-top: 14px solid transparent;
+    border-top: 14px solid transparent;
 	border-bottom: 14px solid transparent;
 }
-section > ul > li > a:hover {
-    color: white;
-    border-top: 14px solid #333;
-	border-bottom: 14px solid #333;
-}
-/*Back to home button*/
-section > a:link, section > a:visited {
-    background-color: transparent;
-	color: #333;
-    padding: 14px 25px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 1%;
-    margin-bottom: 1%;
-    width: 100%;
-    box-sizing: border-box;
-}
-section > a:hover, section > a:active {
+a:hover, a:active {
     background-color: #333;
     color: white;
 }

@@ -1,3 +1,4 @@
+{% extends "index.html" %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -60,8 +61,7 @@
 	</nav>
 
 	<main>
-		{% block main %}
-		<aside>
+			<aside>
 			<h3>
 				Categories
 			</h3>
@@ -72,11 +72,10 @@
 			</ul>
 
 		</aside>
-
-		<section>
 			{% block section %}
 			<h3>
-				Latest Items
+				{{cat.name}} Items ({{iNum}} Items)
+
 			</h3>
 			
 			<ul>
@@ -84,9 +83,9 @@
 				<li><a href = "/app/{{item.category.name}}/{{item.name}}">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
 				{% endfor %}
 			</ul>
+
+			<a href="/app">Back to home</a>
 			{% endblock %}
-		</section>
-		{% endblock %}
 	</main>
 
 	<!--NEW GOOGLE SIGN IN CODE -->

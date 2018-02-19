@@ -58,7 +58,22 @@ def showItems(cName):
     categories = db.query(Category).all()
     items = db.query(Item).filter_by(cat_id=cat.id).all()
     iNum = len(items)
-    return render_template('index.html', categories=categories, items=items, home=False, cat=cat, iNum=iNum)
+    return render_template('category.html', categories=categories, items=items,
+                           home=False, cat=cat, iNum=iNum)
+
+# Create a Item 
+
+@app.route('/app/<cName>/new', methods=['GET', 'POST'])
+def newItem(cName):
+    category = db.query(Category).filter_by(name=cName).one()
+    if request.method == 'POST':
+        newItem = Item(name=request.form['name'], description=request.form[
+                           'description'], category=request.form['category'])
+        db.add(newItem)
+        db.commit()
+        return redirect("http://localhost:1234/", code=301)
+    else:
+        return render_template('newItem.html')
 
 @app.route('/signout', methods = ['GET'])
 def logout():
@@ -146,26 +161,7 @@ def login(provider):
     else:
         return 'Unrecoginized Provider'
 
-@app.route('/api/resource')
-@auth.login_required
-def get_resource():
-    return jsonify({ 'data': 'Hello, %s!' % g.user.username })
 
-
-
-# Create a new menu item
-# @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
-# def newMenuItem(restaurant_id):
-#     restaurant = db.query(Restaurant).filter_by(id=restaurant_id).one()
-#     if request.method == 'POST':
-#         newItem = MenuItem(name=request.form['name'], description=request.form[
-#                            'description'], price=request.form['price'], course=request.form['course'], restaurant_id=restaurant_id)
-#         db.add(newItem)
-#         db.commit()
-#         flash('New Menu %s Item Successfully Created' % (newItem.name))
-#         return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-#     else:
-#         return render_template('newmenuitem.html', restaurant_id=restaurant_id)
 
 
 # # JSON APIs to view Restaurant Information
@@ -187,51 +183,6 @@ def get_resource():
 # def restaurantsJSON():
 #     restaurants = db.query(Restaurant).all()
 #     return jsonify(restaurants=[r.serialize for r in restaurants])
-
-# Create a new restaurant
-
-
-# @app.route('/restaurant/new/', methods=['GET', 'POST'])
-# def newRestaurant():
-#     if request.method == 'POST':
-#         newRestaurant = Restaurant(name=request.form['name'])
-#         db.add(newRestaurant)
-#         flash('New Restaurant %s Successfully Created' % newRestaurant.name)
-#         db.commit()
-#         return redirect(url_for('showRestaurants'))
-#     else:
-#         return render_template('newRestaurant.html')
-
-# # Edit a restaurant
-
-
-# @app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
-# def editRestaurant(restaurant_id):
-#     editedRestaurant = db.query(
-#         Restaurant).filter_by(id=restaurant_id).one()
-#     if request.method == 'POST':
-#         if request.form['name']:
-#             editedRestaurant.name = request.form['name']
-#             flash('Restaurant Successfully Edited %s' % editedRestaurant.name)
-#             return redirect(url_for('showRestaurants'))
-#     else:
-#         return render_template('editRestaurant.html', restaurant=editedRestaurant)
-
-
-# # Delete a restaurant
-# @app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET', 'POST'])
-# def deleteRestaurant(restaurant_id):
-#     restaurantToDelete = db.query(
-#         Restaurant).filter_by(id=restaurant_id).one()
-#     if request.method == 'POST':
-#         db.delete(restaurantToDelete)
-#         flash('%s Successfully Deleted' % restaurantToDelete.name)
-#         db.commit()
-#         return redirect(url_for('showRestaurants', restaurant_id=restaurant_id))
-#     else:
-#         return render_template('deleteRestaurant.html', restaurant=restaurantToDelete)
-
-
 
 # # Edit a menu item
 
