@@ -1,13 +1,9 @@
-# Debugging
-from __future__ import print_function
-import sys
-
 from models import User, Category, Item, Base
-from flask import Flask, jsonify, request, url_for, abort, g, render_template, session, redirect
+from flask import Flask, jsonify, request, url_for, abort, g, render_template, session, redirect, flash
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
-
+import urllib
 from flask_httpauth import HTTPBasicAuth
 import json
 
@@ -34,6 +30,7 @@ app = Flask(__name__, static_url_path='/static')
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 
+'''Display Routing'''
 
 # Show Main Page
 @app.route('/')
@@ -47,14 +44,15 @@ def showIndex():
         return render_template('index.html', categories=categories, items=items, user=True)
 
 # Show Item Descriptions
-
 @app.route('/app/<cName>/<iName>')
 def showItemDesc(cName, iName):
     item = db.query(Item).filter_by(name=iName).one()
-    return render_template('desc.html', item=item)
+    if session.get('g_id') is None:
+        return render_template('desc.html', item=item, user=False)
+    else:
+        return render_template('desc.html', item=item, user=True)
 
 # Show All Items In Category
-
 @app.route('/app/<cName>')
 def showItems(cName):
     cat = db.query(Category).filter_by(name=cName).one()
@@ -64,26 +62,60 @@ def showItems(cName):
     return render_template('category.html', categories=categories, items=items,
                            cat=cat, iNum=iNum)
 
-# Create a Item 
+'''CRUD Operations'''
 
+# Create an Item 
 @app.route('/app/new/', methods=['GET', 'POST'])
 def newItem():
     categories = db.query(Category).all()
     if request.method == 'POST':
         cat = db.query(Category).filter_by(name = request.form['category']).one()
-        newItem = Item(name=request.form['name'], description=request.form[
-                           'description'], category=cat)
+        newItem = Item(name=request.form['name'], description=request.form['description'],
+                       category=cat)
         db.add(newItem)
         db.commit()
+        flash('Item Added!')
         return redirect("http://localhost:1234/app")
     else:
         return render_template('newItem.html', categories = categories)
 
+# Delete an Item
+@app.route('/app/<cName>/<iName>/delete', methods=['POST'])
+def delItem(cName, iName):
+    iName = urllib.unquote(iName).decode('utf8') 
+    item = db.query(Item).filter_by(name=iName).one()
+    db.remove(item)
+    db.commit()
+    flash('Item Deleted!')
+    return redirect("http://localhost:1234/app")
+
+# Edit an Item
+@app.route('/app/<cName>/<iName>/edit', methods=['GET', 'POST'])
+def editItem(cName, iName):
+    iName = urllib.unquote(iName).decode('utf8')
+    item = db.query(Item).filter_by(name=iName).one()
+    if request.method == 'POST':
+        cat = db.query(Category).filter_by(name=request.form['category']).one()
+        item.name = request.form['name']
+        item.description = request.form['description']
+        item.category = cat
+        flash('Item Edited!')
+        return redirect("http://localhost:1234/app")
+    else:
+        categories = db.query(Category).all()
+        return render_template('editItem.html', name=iName, description=item.description,
+                               category=item.category, categories=categories)
+
+
+'''Authentication'''
+
+# Sign out Routing
 @app.route('/signout', methods = ['POST'])
 def logout():
     session['g_id'] = None
     return redirect("http://localhost:1234/", code=278)
 
+# Sign in Routing
 @app.route('/oauth/google', methods = ['POST'])
 def login():
     auth_code = request.data
@@ -143,9 +175,6 @@ def login():
 
     return "Complete"
 
-
-
-
 # # JSON APIs to view Restaurant Information
 # @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
 # def restaurantMenuJSON(restaurant_id):
@@ -165,45 +194,6 @@ def login():
 # def restaurantsJSON():
 #     restaurants = db.query(Restaurant).all()
 #     return jsonify(restaurants=[r.serialize for r in restaurants])
-
-# # Edit a menu item
-
-
-# @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit', methods=['GET', 'POST'])
-# def editMenuItem(restaurant_id, menu_id):
-
-#     editedItem = db.query(MenuItem).filter_by(id=menu_id).one()
-#     restaurant = db.query(Restaurant).filter_by(id=restaurant_id).one()
-#     if request.method == 'POST':
-#         if request.form['name']:
-#             editedItem.name = request.form['name']
-#         if request.form['description']:
-#             editedItem.description = request.form['description']
-#         if request.form['price']:
-#             editedItem.price = request.form['price']
-#         if request.form['course']:
-#             editedItem.course = request.form['course']
-#         db.add(editedItem)
-#         db.commit()
-#         flash('Menu Item Successfully Edited')
-#         return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-#     else:
-#         return render_template('editmenuitem.html', restaurant_id=restaurant_id, menu_id=menu_id, item=editedItem)
-
-
-# # Delete a menu item
-# @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET', 'POST'])
-# def deleteMenuItem(restaurant_id, menu_id):
-#     restaurant = db.query(Restaurant).filter_by(id=restaurant_id).one()
-#     itemToDelete = db.query(MenuItem).filter_by(id=menu_id).one()
-#     if request.method == 'POST':
-#         db.delete(itemToDelete)
-#         db.commit()
-#         flash('Menu Item Successfully Deleted')
-#         return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-#     else:
-#         return render_template('deleteMenuItem.html', item=itemToDelete)
-
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
