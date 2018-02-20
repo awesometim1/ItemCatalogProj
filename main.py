@@ -80,11 +80,11 @@ def newItem():
         return render_template('newItem.html', categories = categories)
 
 # Delete an Item
-@app.route('/app/<cName>/<iName>/delete', methods=['POST'])
+@app.route('/app/<cName>/<iName>/delete', methods=['GET'])
 def delItem(cName, iName):
     iName = urllib.unquote(iName).decode('utf8') 
     item = db.query(Item).filter_by(name=iName).one()
-    db.remove(item)
+    db.delete(item)
     db.commit()
     flash('Item Deleted!')
     return redirect("http://localhost:1234/app")
@@ -99,6 +99,7 @@ def editItem(cName, iName):
         item.name = request.form['name']
         item.description = request.form['description']
         item.category = cat
+        db.commit()
         flash('Item Edited!')
         return redirect("http://localhost:1234/app")
     else:
@@ -175,25 +176,12 @@ def login():
 
     return "Complete"
 
-# # JSON APIs to view Restaurant Information
-# @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
-# def restaurantMenuJSON(restaurant_id):
-#     restaurant = db.query(Restaurant).filter_by(id=restaurant_id).one()
-#     items = db.query(MenuItem).filter_by(
-#         restaurant_id=restaurant_id).all()
-#     return jsonify(MenuItems=[i.serialize for i in items])
-
-
-# @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
-# def menuItemJSON(restaurant_id, menu_id):
-#     Menu_Item = db.query(MenuItem).filter_by(id=menu_id).one()
-#     return jsonify(Menu_Item=Menu_Item.serialize)
-
-
-# @app.route('/restaurant/JSON')
-# def restaurantsJSON():
-#     restaurants = db.query(Restaurant).all()
-#     return jsonify(restaurants=[r.serialize for r in restaurants])
+# JSON Endpoint
+@app.route('/app/catalog.json')
+def catalogJSON():
+    cats = db.query(Category).all()
+    items = db.query(Item).all()
+    return jsonify(cats = [c.serialize for c in [i.serialize for i in items]])
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'

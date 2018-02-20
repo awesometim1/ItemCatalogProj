@@ -76,7 +76,15 @@
 
 		<section>
 			{% block section %}
+			{% with messages = get_flashed_messages() %}
+					{% if messages %}
+						{% for msg in messages %}
+							<h5 style = "text-align:center">{{msg}}</h5>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
 			<h3>
+				
 				Latest Items
 			</h3>
 			{% if user %}
