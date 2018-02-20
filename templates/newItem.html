@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/desc.css">
+{% endblock %}
+
+{% block main %}
+<section>
+	<form method = "post">
+		Name: <input type="text" name="name"> <br>
+		Description: <input type="text" name="description"> <br>
+		Category: <select name = "category">
+			{% for cat in categories %}
+			<option value = "{{cat.name}}">{{cat.name}}</option>
+			{% endfor %}
+		</select>
+		<input type = "submit" value = "Submit">
+	</form>
+	<a href="/app">Back to home</a>
+</section>
+{% endblock %}

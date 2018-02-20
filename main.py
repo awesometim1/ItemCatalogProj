@@ -3,7 +3,7 @@ from __future__ import print_function
 import sys
 
 from models import User, Category, Item, Base
-from flask import Flask, jsonify, request, url_for, abort, g, render_template, session, redirect, flash
+from flask import Flask, jsonify, request, url_for, abort, g, render_template, session, redirect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -40,7 +40,7 @@ CLIENT_ID = json.loads(
 @app.route('/app')
 def showIndex():
     categories = db.query(Category).all()
-    items = db.query(Item).order_by(Item.time.desc()).all()
+    items = db.query(Item).order_by(Item.time.desc()).limit(7)
     if session.get('g_id') is None:
         return render_template('index.html', categories=categories, items=items, user=False)
     else:
@@ -66,17 +66,18 @@ def showItems(cName):
 
 # Create a Item 
 
-@app.route('/app/<cName>/new', methods=['GET', 'POST'])
-def newItem(cName):
-    category = db.query(Category).filter_by(name=cName).one()
+@app.route('/app/new/', methods=['GET', 'POST'])
+def newItem():
+    categories = db.query(Category).all()
     if request.method == 'POST':
+        cat = db.query(Category).filter_by(name = request.form['category']).one()
         newItem = Item(name=request.form['name'], description=request.form[
-                           'description'], category=request.form['category'])
+                           'description'], category=cat)
         db.add(newItem)
         db.commit()
-        return redirect("http://localhost:1234/", code=301)
+        return redirect("http://localhost:1234/app")
     else:
-        return render_template('newItem.html')
+        return render_template('newItem.html', categories = categories)
 
 @app.route('/signout', methods = ['POST'])
 def logout():
