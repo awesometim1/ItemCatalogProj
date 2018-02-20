@@ -28,7 +28,9 @@ Item Catalog uses `python` and the following modules for python:
 2. `pip install flask`
 3. `pip install oauth2client`
 4. `git clone https://github.com/awesometim1/ItemCatalogProj.git` (Clone the whole repository)
+
 (If python is not installed on system)
+
 5. `pip install python`
 
 ## Usage 
