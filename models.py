@@ -4,14 +4,8 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine, func
-from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import(TimedJSONWebSignatureSerializer as
-                         Serializer, BadSignature, SignatureExpired)
 
 Base = declarative_base()
-key_helper = random.choice(string.ascii_uppercase + string.digits)
-secret_key = ''.join(key_helper for x in xrange(32))
-
 
 # User Model
 class User(Base):
