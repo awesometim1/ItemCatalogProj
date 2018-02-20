@@ -3,7 +3,7 @@ from __future__ import print_function
 import sys
 
 from models import User, Category, Item, Base
-from flask import Flask, jsonify, request, url_for, abort, g, render_template, session, redirect
+from flask import Flask, jsonify, request, url_for, abort, g, render_template, session, redirect, flash
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -41,7 +41,10 @@ CLIENT_ID = json.loads(
 def showIndex():
     categories = db.query(Category).all()
     items = db.query(Item).order_by(Item.time.desc()).all()
-    return render_template('index.html', categories=categories, items=items, home=True)
+    if session.get('g_id') is None:
+        return render_template('index.html', categories=categories, items=items, user=False)
+    else:
+        return render_template('index.html', categories=categories, items=items, user=True)
 
 # Show Item Descriptions
 
@@ -59,7 +62,7 @@ def showItems(cName):
     items = db.query(Item).filter_by(cat_id=cat.id).all()
     iNum = len(items)
     return render_template('category.html', categories=categories, items=items,
-                           home=False, cat=cat, iNum=iNum)
+                           cat=cat, iNum=iNum)
 
 # Create a Item 
 
@@ -75,91 +78,69 @@ def newItem(cName):
     else:
         return render_template('newItem.html')
 
-@app.route('/signout', methods = ['GET'])
+@app.route('/signout', methods = ['POST'])
 def logout():
     session['g_id'] = None
-    print("Signed out!", file = sys.stderr)
-    return redirect("http://localhost:1234/", code=301)
+    return redirect("http://localhost:1234/", code=278)
 
-@app.route('/oauth/<provider>', methods = ['POST'])
-def login(provider):
-    # STEP 1 - Parse the auth code
+@app.route('/oauth/google', methods = ['POST'])
+def login():
     auth_code = request.data
-    print(auth_code, file=sys.stderr)
-    if provider == 'google':
-        # STEP 2 - Exchange for a token
-        try:
-            # Upgrade the authorization code into a credentials object
-            oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-            oauth_flow.redirect_uri = 'postmessage'
-            credentials = oauth_flow.step2_exchange(auth_code)
-        except FlowExchangeError:
-            response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
-            response.headers['Content-Type'] = 'application/json'
-            return response
+    # STEP 2 - Exchange for a token
+    try:
+        # Upgrade the authorization code into a credentials object
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow.redirect_uri = 'postmessage'
+        credentials = oauth_flow.step2_exchange(auth_code)
+    except FlowExchangeError:
+        response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
           
-        # Check that the access token is valid.
-        access_token = credentials.access_token
-        url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
-        h = httplib2.Http()
-        result = json.loads(h.request(url, 'GET')[1])
-        # If there was an error in the access token info, abort.
-        if result.get('error') is not None:
-            response = make_response(json.dumps(result.get('error')), 500)
-            response.headers['Content-Type'] = 'application/json'
-            
-        # # Verify that the access token is used for the intended user.
-        g_id = credentials.id_token['sub']
-        if result['user_id'] != g_id:
-            response = make_response(json.dumps("Token's user ID doesn't match given user ID."), 401)
-            response.headers['Content-Type'] = 'application/json'
-            return response
+    # Check that the access token is valid.
+    access_token = credentials.access_token
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    h = httplib2.Http()
+    result = json.loads(h.request(url, 'GET')[1])
+    # If there was an error in the access token info, abort.
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application/json'
 
-        # # Verify that the access token is valid for this app.
-        if result['issued_to'] != CLIENT_ID:
-            response = make_response(json.dumps("Token's client ID does not match app's."), 401)
-            response.headers['Content-Type'] = 'application/json'
-            return response
-
-        stored_g_id = session.get('g_id')
-        if g_id == stored_g_id:
-            response = make_response(json.dumps('Current user is already connected.'), 200)
-            response.headers['Content-Type'] = 'application/json'
-            return response
-
-        # STEP 3 - Find User or make a new one
+    # STEP 3 - Find User or make a new one
         
-        # Get user info
-        h = httplib2.Http()
-        userinfo_url =  "https://www.googleapis.com/oauth2/v1/userinfo"
-        params = {'access_token': credentials.access_token, 'alt':'json'}
-        answer = requests.get(userinfo_url, params=params)
+    # Get user info
+    h = httplib2.Http()
+    userinfo_url =  "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt':'json'}
+    answer = requests.get(userinfo_url, params=params)
       
-        data = answer.json()
+    data = answer.json()
 
-        user_name = data['name']
-        user_id = data['id']
-        # See if user exists, if it doesn't make a new one
-        exists = db.query(User.id).filter_by(id = 2).scalar() is not None
-        if exists:
-            user = db.query(User).filter_by(g_id=user_id).first()
-        if not exists or not user:
-            user = User(g_id = user_id, name = user_name)
-            db.add(user)
-            db.commit()
+    user_name = data['name']
+    g_id = data['id']
 
-        # STEP 4 - Make token
-        token = user.generate_auth_token(600)
+    # Check if the user is already connected
+    stored_g_id = session.get('g_id')
+    if g_id == stored_g_id:
+        response = make_response(json.dumps('Current user is already connected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
-        # STEP 5 - Make user session
+    # See if user exists, if it doesn't make a new one
+    exists = db.query(User.id).filter_by(id = 2).scalar() is not None
+    if exists:
+        user = db.query(User).filter_by(g_id=g_id).first()
+    if not exists or not user:
+        user = User(g_id = g_id, name = user_name)
+        db.add(user)
+        db.commit()
 
-        session['g_id'] = g_id
+    # STEP 5 - Make user session
 
-        # STEP 6 - Send back token to the client 
+    session['g_id'] = g_id
 
-        return jsonify({'token': token.decode('ascii'), 'duration': 600})
-    else:
-        return 'Unrecoginized Provider'
+    return "Complete"
 
 
 

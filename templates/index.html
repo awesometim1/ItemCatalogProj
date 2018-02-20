@@ -79,7 +79,9 @@
 			<h3>
 				Latest Items
 			</h3>
-			
+			{% if user %}
+				<span><a href="/app">New Item</a></span>
+			{% endif %}
 			<ul>
 				{% for item in items%}
 				<li><a href = "/app/{{item.category.name}}/{{item.name}}">{{item.name}}<em> ({{item.category.name}})</em></a> </li>
@@ -93,8 +95,6 @@
 	<!--NEW GOOGLE SIGN IN CODE -->
 	<script>
 		function signInCallback(json) {
-			console.log('inside callback fuction');
-			console.log(json);
 			authResult = json;
 			if (authResult['code']) {
     			// Send the code to the server
@@ -105,14 +105,8 @@
     				data: authResult['code'],
     				contentType: 'application/octet-stream; charset=utf-8',
     				success: function(result) {
-        	// Handle or verify the server response if necessary.
-        	if (result) {
-        		console.log('Login Successful!'+ result)
-        	} else if (authResult['error']) {
-        		console.log('There was an error: ' + authResult['error']);
-        	} else {
-        		console.log('Failed to make a server-side call. Check your configuration and console.');
-        	}
+        				//redirect
+        				window.location.replace('http://localhost:1234/app');
         }
     });
     		}
@@ -122,10 +116,10 @@
     	function signOutCallback() {
     		console.log('Signing out...');
     		$.ajax({
-    			type: 'GET',
+    			type: 'POST',
     			url: 'http://localhost:1234/signout',
     			success: function(result) {
-    				console.log("SIGNED OUT!")
+    				window.location.replace('http://localhost:1234/app');
     			}
     		});
     	}
