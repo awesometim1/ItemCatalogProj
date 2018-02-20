@@ -26,6 +26,7 @@ db = DBSession()
 # Start Flask
 app = Flask(__name__, static_url_path='/static')
 
+
 # Get Client ID
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
@@ -180,8 +181,7 @@ def login():
 @app.route('/app/catalog.json')
 def catalogJSON():
     cats = db.query(Category).all()
-    items = db.query(Item).all()
-    return jsonify(cats = [c.serialize for c in [i.serialize for i in items]])
+    return jsonify(categories = [c.serialize for c in cats])
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
