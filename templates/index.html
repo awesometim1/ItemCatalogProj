@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,16 +38,22 @@
 		<ul>
 			<li id = "navLabel"><strong>Item Catalog</strong></li>
 			<!-- GOOGLE SIGN IN BUTTON -->
-			<div  class="g-signin2" id = "signInButton"><strong></strong></div>
-			
+			{% if user %}
+			<div  class="g-signin2" id = "signInButton" style="display:none"><strong></strong></div>
+			{% else %}
+			<div  class="g-signin2" id = "signInButton" style="display:block"><strong></strong></div>
+			{% endif %}
 			<script>
 				$('#signInButton').click(function() {
 					console.log("signing!")
 					auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
 				});
 			</script>
-
+			{% if user %}
 			<button id = "signOut" style = "display: block" onclick= "signOut()" type = "button">Sign out</button>
+			{% else %}
+			<button id = "signOut" style = "display: none" onclick= "signOut()" type = "button">Sign out</button>
+			{% endif %}
 			<script>
 				function signOut() {
 					if (auth2.isSignedIn.get()){
@@ -77,18 +84,18 @@
 		<section>
 			{% block section %}
 			{% with messages = get_flashed_messages() %}
-					{% if messages %}
-						{% for msg in messages %}
-							<h5 style = "text-align:center">{{msg}}</h5>
-						{% endfor %}
-					{% endif %}
-				{% endwith %}
+			{% if messages %}
+			{% for msg in messages %}
+			<h5 style = "text-align:center">{{msg}}</h5>
+			{% endfor %}
+			{% endif %}
+			{% endwith %}
 			<h3>
-				
+
 				Latest Items
 			</h3>
 			{% if user %}
-				<span><a href="/app/new/">New Item</a></span>
+			<span><a href="/app/new/">New Item</a></span>
 			{% endif %}
 			<ul>
 				{% for item in items%}
@@ -115,8 +122,8 @@
     				success: function(result) {
         				//redirect
         				window.location.replace('http://localhost:1234/app');
-        }
-    });
+        			}
+        		});
     		}
     	}
     </script>

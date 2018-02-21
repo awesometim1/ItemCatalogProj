@@ -91,7 +91,12 @@ def newItem():
         flash('Item Added!')
         return redirect("http://localhost:1234/app")
     else:
-        return render_template('newItem.html', categories=categories)
+        if session.get('g_id') is None:
+            return render_template('newItem.html', categories=categories,
+                                   user=False)
+        else:
+            return render_template('newItem.html', categories=categories,
+                                   user=True)
 
 # Delete an Item
 
@@ -122,9 +127,18 @@ def editItem(cName, iName):
         return redirect("http://localhost:1234/app")
     else:
         categories = db.query(Category).all()
-        return render_template('editItem.html', name=iName,
-                               description=item.description,
-                               category=item.category, categories=categories)
+        if session.get('g_id') is None:
+            return render_template('editItem.html', name=iName,
+                                   description=item.description,
+                                   category=item.category,
+                                   categories=categories,
+                                   user=False)
+        else:
+            return render_template('editItem.html', name=iName,
+                                   description=item.description,
+                                   category=item.category,
+                                   categories=categories,
+                                   user=True)
 
 
 '''Authentication'''
@@ -134,7 +148,7 @@ def editItem(cName, iName):
 
 @app.route('/signout', methods=['POST'])
 def logout():
-    session['g_id'] = None
+    session.pop('g_id', None)
     return redirect("http://localhost:1234/", code=278)
 
 # Sign in Routing

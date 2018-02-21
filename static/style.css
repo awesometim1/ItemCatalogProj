@@ -47,7 +47,7 @@ nav > ul{
     border: none;
     font-family: inherit;
     font-size:inherit;
-    margin-right:1%;
+    margin-right:10%;
 }
 #signOut:hover, #signOut:active {
     background-color: white;
