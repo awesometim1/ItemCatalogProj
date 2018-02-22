@@ -50,15 +50,18 @@ def showIndex():
 
 @app.route('/app/<cName>/<iName>')
 def showItemDesc(cName, iName):
-    item = db.query(Item).filter_by(name=iName).one()
-    return render_template('desc.html', item=item)
+    item = db.query(Item).filter_by(name=iName).one_or_none()
+    if item is not None:
+        return render_template('desc.html', item=item)
+    else:
+        return render_template('index.html')
 
 # Show All Items In Category
 
 
 @app.route('/app/<cName>')
 def showItems(cName):
-    cat = db.query(Category).filter_by(name=cName).one()
+    cat = db.query(Category).filter_by(name=cName).one_or_none()
     categories = db.query(Category).all()
     items = db.query(Item).filter_by(cat_id=cat.id).all()
     iNum = len(items)
@@ -75,7 +78,7 @@ def showItems(cName):
 def newItem():
     categories = db.query(Category).all()
     if request.method == 'POST' and session.get(g_id) is not None:
-        cat = db.query(Category).filter_by(name=request.form['category']).one_or_none()
+        cat = db.query(Category).filter_by(name=request.form['category'])
         newItem = Item(name=request.form['name'],
                        description=request.form['description'],
                        category=cat)
@@ -93,10 +96,11 @@ def newItem():
 def delItem(cName, iName):
     if session.get(g_id) is not None:
         iName = urllib.unquote(iName).decode('utf8')
-        item = db.query(Item).filter_by(name=iName).one()
-        db.delete(item)
-        db.commit()
-        flash('Item Deleted!')
+        item = db.query(Item).filter_by(name=iName).one_or_none()
+        if item is not None:
+            db.delete(item)
+            db.commit()
+            flash('Item Deleted!')
     return redirect("http://localhost:1234/app")
 
 # Edit an Item
@@ -107,12 +111,13 @@ def editItem(cName, iName):
     iName = urllib.unquote(iName).decode('utf8')
     item = db.query(Item).filter_by(name=iName).one()
     if request.method == 'POST' and session.get(g_id) is not None:
-        cat = db.query(Category).filter_by(name=request.form['category']).one()
-        item.name = request.form['name']
-        item.description = request.form['description']
-        item.category = cat
-        db.commit()
-        flash('Item Edited!')
+        cat = db.query(Category).filter_by(name=request.form['category']).one_or_none()
+        if cat is not None:
+            item.name = request.form['name']
+            item.description = request.form['description']
+            item.category = cat
+            db.commit()
+            flash('Item Edited!')
         return redirect("http://localhost:1234/app")
     else:
         categories = db.query(Category).all()
