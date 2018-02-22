@@ -74,7 +74,7 @@ def showItems(cName):
 @app.route('/app/new/', methods=['GET', 'POST'])
 def newItem():
     categories = db.query(Category).all()
-    if request.method == 'POST':
+    if request.method == 'POST' and session.get(g_id) is not None:
         cat = db.query(Category).filter_by(name=request.form['category']).one()
         newItem = Item(name=request.form['name'],
                        description=request.form['description'],
@@ -91,11 +91,12 @@ def newItem():
 
 @app.route('/app/<cName>/<iName>/delete', methods=['GET'])
 def delItem(cName, iName):
-    iName = urllib.unquote(iName).decode('utf8')
-    item = db.query(Item).filter_by(name=iName).one()
-    db.delete(item)
-    db.commit()
-    flash('Item Deleted!')
+    if session.get(g_id) is not None:
+        iName = urllib.unquote(iName).decode('utf8')
+        item = db.query(Item).filter_by(name=iName).one()
+        db.delete(item)
+        db.commit()
+        flash('Item Deleted!')
     return redirect("http://localhost:1234/app")
 
 # Edit an Item
@@ -105,7 +106,7 @@ def delItem(cName, iName):
 def editItem(cName, iName):
     iName = urllib.unquote(iName).decode('utf8')
     item = db.query(Item).filter_by(name=iName).one()
-    if request.method == 'POST':
+    if request.method == 'POST' and session.get(g_id) is not None:
         cat = db.query(Category).filter_by(name=request.form['category']).one()
         item.name = request.form['name']
         item.description = request.form['description']
