@@ -38,7 +38,7 @@
 		<ul>
 			<li id = "navLabel"><strong>Item Catalog</strong></li>
 			<!-- GOOGLE SIGN IN BUTTON -->
-			{% if user %}
+			{% if session['g_id'] %}
 			<div  class="g-signin2" id = "signInButton" style="display:none"><strong></strong></div>
 			{% else %}
 			<div  class="g-signin2" id = "signInButton" style="display:block"><strong></strong></div>
@@ -49,7 +49,7 @@
 					auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
 				});
 			</script>
-			{% if user %}
+			{% if session['g_id'] %}
 			<button id = "signOut" style = "display: block" onclick= "signOut()" type = "button">Sign out</button>
 			{% else %}
 			<button id = "signOut" style = "display: none" onclick= "signOut()" type = "button">Sign out</button>
@@ -94,7 +94,7 @@
 
 				Latest Items
 			</h3>
-			{% if user %}
+			{% if session['g_id'] %}
 			<span><a href="/app/new/">New Item</a></span>
 			{% endif %}
 			<ul>

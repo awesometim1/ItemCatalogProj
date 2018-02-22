@@ -42,12 +42,8 @@ CLIENT_ID = json.loads(
 def showIndex():
     categories = db.query(Category).all()
     items = db.query(Item).order_by(Item.time.desc()).limit(7)
-    if session.get('g_id') is None:
-        return render_template('index.html', categories=categories,
-                               items=items, user=False)
-    else:
-        return render_template('index.html', categories=categories,
-                               items=items, user=True)
+    return render_template('index.html', categories=categories,
+                               items=items)
 
 # Show Item Descriptions
 
@@ -55,10 +51,7 @@ def showIndex():
 @app.route('/app/<cName>/<iName>')
 def showItemDesc(cName, iName):
     item = db.query(Item).filter_by(name=iName).one()
-    if session.get('g_id') is None:
-        return render_template('desc.html', item=item, user=False)
-    else:
-        return render_template('desc.html', item=item, user=True)
+    return render_template('desc.html', item=item)
 
 # Show All Items In Category
 
@@ -91,12 +84,7 @@ def newItem():
         flash('Item Added!')
         return redirect("http://localhost:1234/app")
     else:
-        if session.get('g_id') is None:
-            return render_template('newItem.html', categories=categories,
-                                   user=False)
-        else:
-            return render_template('newItem.html', categories=categories,
-                                   user=True)
+        return render_template('newItem.html', categories=categories)
 
 # Delete an Item
 
@@ -127,18 +115,10 @@ def editItem(cName, iName):
         return redirect("http://localhost:1234/app")
     else:
         categories = db.query(Category).all()
-        if session.get('g_id') is None:
-            return render_template('editItem.html', name=iName,
+        return render_template('editItem.html', name=iName,
                                    description=item.description,
                                    category=item.category,
-                                   categories=categories,
-                                   user=False)
-        else:
-            return render_template('editItem.html', name=iName,
-                                   description=item.description,
-                                   category=item.category,
-                                   categories=categories,
-                                   user=True)
+                                   categories=categories)
 
 
 '''Authentication'''
@@ -149,7 +129,7 @@ def editItem(cName, iName):
 @app.route('/signout', methods=['POST'])
 def logout():
     session.pop('g_id', None)
-    return redirect("http://localhost:1234/", code=278)
+    return redirect("http://localhost:1234/")
 
 # Sign in Routing
 

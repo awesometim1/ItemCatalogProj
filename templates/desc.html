@@ -11,7 +11,7 @@
 		{{item.name}}
 	</h1>
 	<p>{{item.description}}</p>
-	{% if user %}
+	{% if session['g_id'] %}
 	<a href="/app/{{item.category.name}}/{{item.name}}/edit" style="width:10vw;padding:2%,5%;margin-right:1%;font-size:1vw">Edit</a>
 	<a href="/app/{{item.category.name}}/{{item.name}}/delete" style="width:10vw;padding:2%,5%;margin-right:1%;font-size:1vw">Delete</a>
 	{% endif %}
