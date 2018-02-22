@@ -75,7 +75,7 @@ def showItems(cName):
 def newItem():
     categories = db.query(Category).all()
     if request.method == 'POST' and session.get(g_id) is not None:
-        cat = db.query(Category).filter_by(name=request.form['category']).one()
+        cat = db.query(Category).filter_by(name=request.form['category']).one_or_none()
         newItem = Item(name=request.form['name'],
                        description=request.form['description'],
                        category=cat)
